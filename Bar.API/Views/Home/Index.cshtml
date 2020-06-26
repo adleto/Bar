@@ -32,7 +32,7 @@
                     <td>
                         @foreach (var x in order.Items)
                         {
-                            cijenaStavke += x.Item1.Price;
+                            cijenaStavke += (x.Item1.Price*x.Item2);
                             <span>@x.Item1.Naziv x@(x.Item2)</span>
                             @if (order.Items.IndexOf(x) != order.Items.Count - 1)
                             {
