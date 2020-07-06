@@ -1,0 +1,86 @@
+﻿@model Bar.Models.User.UserListViewModel
+    <div class="row">
+        <div class="col-md-12 text-right mb-1">
+            <a title="Dodaj novog korisnika" role="button" class="btn btn-success rounded" data-toggle="ajax-modal" data-target="#add-korisnik" data-url="@Url.Action("GetUser")">
+                +
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Naziv</th>
+                        <th>Akcije</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var k in Model.Users)
+                    {
+                        <tr>
+                            <th>@(Model.Users.IndexOf(k) + 1).</th>
+                            <td>@k.Username</td>
+                            <td>
+                                <a role="button" data-url="@Url.Action("UserDelete", new { id = k.Id })"><i class="material-icons text-danger">delete</i></a>
+                                <a role="button" data-toggle="ajax-modal" data-target="#add-user" data-url="@Url.Action("GetUser", new { id = k.Id })"><i class="material-icons text-info">edit</i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            var placeholderElement = $('#modal-placeholder');
+
+            $('a[data-toggle="ajax-modal"]').click(function (event) {
+                var url = $(this).data('url');
+                $.get(url).done(function (data) {
+                    placeholderElement.html(data);
+                    placeholderElement.find('.modal').modal('show');
+
+                    var forms = placeholderElement.find('form');
+                    $.validator.unobtrusive.parse(forms[forms.length - 1]);
+                });
+            });
+
+            $('a[role="button"').click(function () {
+                var url = $(this).data('url');
+
+                $.ajax({
+                    url: url,
+                    contentType: 'application/html ; charset:utf-8',
+                    type: 'POST',
+                    dataType: 'html'
+                }).done(function (data) {
+                    if (data == "Ok") {
+                        location.reload();
+                    }
+                });
+            })
+
+            placeholderElement.on('click', '[data-save="modal"]', function (event) {
+
+                event.preventDefault();
+                var form = $(this).parents('.modal').find('form');
+                var actionUrl = form.data('post');
+                var dataToSend = form.serialize();
+                $.post(actionUrl, dataToSend).done(function (data) {
+                    if (data == "Ok") {
+                        placeholderElement.find('.modal').modal('hide');
+                        location.reload();
+                        return;
+                    }
+                    var newBody = $('.modal-body', data);
+                    placeholderElement.find('.modal-body').replaceWith(newBody);
+
+                    var forms = placeholderElement.find('form');
+                    $.validator.unobtrusive.parse(forms[forms.length - 1]);
+                });
+            });
+        });
+    </script>

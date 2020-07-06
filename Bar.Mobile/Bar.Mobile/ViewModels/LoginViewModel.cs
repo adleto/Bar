@@ -1,5 +1,4 @@
-﻿using Bar.Database.Entities;
-using Bar.Mobile.Service;
+﻿using Bar.Mobile.Service;
 using Bar.Models;
 using System;
 using System.Diagnostics;

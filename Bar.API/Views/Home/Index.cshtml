@@ -1,76 +1,46 @@
-﻿@model Bar.API.ViewModels.IndexViewModel
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
-<style>
-    .myFace{
-        font-size: 30px;
-    }
-    a{
-        font-size: 10px;
-    }
-</style>
-
-<div class="text-center myFace">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <td>#</td>
-                <td>Vrijeme</td>
-                <td>Stavke</td>
-                <td>Iznos</td>
-                <td>User</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var order in Model.OrderList)
-            {
-                decimal cijenaStavke = 0;
-                <tr>
-                    <td>@order.Id</td>
-                    <td>@order.DateTime.ToString("H:mm:ss")</td>
-                    <td>
-                        @foreach (var x in order.Items)
-                        {
-                            cijenaStavke += (x.Item1.Price*x.Item2);
-                            <span>@x.Item1.Naziv x@(x.Item2)</span>
-                            @if (order.Items.IndexOf(x) != order.Items.Count - 1)
-                            {
-                                <span>,</span>
-                            }
-                        }
-                    </td>
-                    <td>@(cijenaStavke) KM</td>
-                    <td>@order.ApplicationUser</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+<div id="dataStorage"></div>
+<div id="notifyDiv"></div>
 @section Scripts{
     <script>
+        $.notify.addStyle('happyblue', {
+            html: "<div>☺<span data-notify-text/>☺</div>",
+            classes: {
+                base: {
+                    "white-space": "nowrap",
+                    "background-color": "lightgreen",
+                    "padding": "5px",
+                    "font-size": "80px"
+                }
+            }
+        });
         $(function () {
             var connection = new signalR.HubConnectionBuilder().withUrl("/myHub").build();
 
             connection.start().then(function () {
-                //getData();
+                getData();
             });
 
             connection.on("RefreshMessage", function () {
-                //getData();
-                location.reload();
+                getData();
+                $('#notifyDiv').notify("IMATE NOVU NARUDŽBU ! ! !", {
+                    autoHideDelay: 10000,
+                    style: 'happyblue'
+                });
             });
         });
-
-                    //function getData() {
-                    //    var container = $('#dataStorage');
-                    //    $.ajax({
-                    //        url: '/AdministrativniRadnik/PregledKategorijaGetData',
-                    //        contentType: 'application/html ; charset:utf-8',
-                    //        type: 'GET',
-                    //        dataType: 'html'
-                    //    })
-                    //        .done(function (result) { container.empty().append(result); })
-                    //}
+        function getData() {
+            var container = $('#dataStorage');
+            $.ajax({
+                url: '/Home/GetData',
+                contentType: 'application/html ; charset:utf-8',
+                type: 'GET',
+                dataType: 'html'
+            }).done(function (result) {
+                container.empty().append(result);
+            });
+        }
     </script>
 }

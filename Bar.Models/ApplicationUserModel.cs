@@ -6,8 +6,8 @@ namespace Bar.Models
 {
     public class ApplicationUserModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Username { get; set; }
-        public RoleModel Role { get; set; }
+        public List<RoleModel> Roles { get; set; }
     }
 }

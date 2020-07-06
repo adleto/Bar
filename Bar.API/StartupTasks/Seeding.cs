@@ -1,70 +1,46 @@
 ﻿using Bar.Database;
 using Bar.Database.Entities;
 using Bar.Infrastructure.Helpers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Bar.API.StartupTasks
 {
     public class Seeding
     {
-        public static void Seed(Context context)
+        public async static Task Seed(IServiceProvider serviceProvider)
         {
-            //var _orderService = serviceProvider.GetRequiredService<IBaseCrudService<Order, Order, Order, Order>>();
-            //await _orderService.Insert(new Order
-            //{
-            //    TimeOfOrder = DateTime.Now
-            //});
-            //await _orderService.Insert(new Order
-            //{
-            //    TimeOfOrder = DateTime.Now
-            //});
-            if (context.Role.Count() == 0)
+            var context = serviceProvider.GetRequiredService<Context>();
+            if (context.ApplicationUser.Count() == 0)
             {
-                var role = new Role
+                var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                string[] roleNames = { "MasterUser", "RegularUser" };
+                IdentityResult roleResult;
+
+                foreach (var roleName in roleNames)
                 {
-                    Name = "MasterUser"
-                };
-                context.Role.Add(role);
-                var role2 = new Role
+                    // creating the roles and seeding them to the database
+                    var roleExist = await RoleManager.RoleExistsAsync(roleName);
+                    if (!roleExist)
+                    {
+                        roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
+                    }
+                }
+
+                var UserManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                ApplicationUser main = new ApplicationUser
                 {
-                    Name = "RegularUser"
+                    UserName = "masterUser",
+                    Email = "master@zar.com"
                 };
-                context.Role.Add(role2);
-                var user = new ApplicationUser
-                {
-                    Username = "konobar1",
-                    Role = role,
-                    PasswordSalt = AuthHelper.GenerateSalt()
-                };
-                user.PasswordHash = AuthHelper.GenerateHash(user.PasswordSalt, "superCoolMe2");
-                context.ApplicationUser.Add(user);
-                context.SaveChanges();
-                //THISTHIISISI
-                //var item = new Item
-                //{
-                //    Naziv = "Kafa",
-                //    Price = 1
-                //};
-                //context.Add(item);
-                //context.SaveChanges();
-                //var order = new Order
-                //{
-                //    ApplicationUser = user,
-                //    TimeOfOrder = DateTime.Now,
-                //    ItemOrderList = new List<ItemOrder>()
-                //};
-                //order.ItemOrderList.Add(new ItemOrder
-                //{
-                //    Item = item,
-                //    Quantity = 5,
-                //    Order = order
-                //});
-                //context.Add(order);
-                //HEHREHREHR
-                //context.SaveChanges();
+                await UserManager.CreateAsync(main, "bestVersionDude5");
+                //Add users to roles
+                await UserManager.AddToRoleAsync(main, "MasterUser");
             }
         }
         public static void MigrateDatabase(Context context)

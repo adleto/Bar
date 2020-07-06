@@ -1,5 +1,4 @@
-﻿using Bar.Database.Entities;
-using Bar.Mobile.Models;
+﻿using Bar.Mobile.Models;
 using Bar.Mobile.Service;
 using Bar.Models;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -81,7 +80,7 @@ namespace Bar.Mobile.ViewModels
         public async Task Init()
         {
             try {
-                var list = await _itemsService.Get<List<Item>>(null);
+                var list = await _itemsService.Get<List<Bar.Models.Item>>(null);
                 ItemsList.Clear();
                 foreach (var item in list)
                 {

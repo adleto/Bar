@@ -9,5 +9,6 @@ namespace Bar.Models
         public int Id { get; set; }
         public string Naziv { get; set; }
         public decimal Price { get; set; }
+        public int Count { get; set; }
     }
 }

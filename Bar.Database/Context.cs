@@ -1,4 +1,5 @@
 ﻿using Bar.Database.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace Bar.Database
 {
-    public class Context : DbContext
+    public class Context : IdentityDbContext
     {
         public Context(DbContextOptions options) : base(options) {}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,7 +22,6 @@ namespace Bar.Database
         public DbSet<Item> Item { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<ItemOrder> ItemOrder { get; set; }
-        public DbSet<Role> Role { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
     }
 }

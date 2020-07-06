@@ -16,15 +16,15 @@ namespace Bar.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = scheme)]
     public class OrderSpecificController : ControllerBase
     {
         private readonly IOrderSpecific _orderSpecificService;
-
+        private const string scheme = "BasicAuthentication";
         public OrderSpecificController(IOrderSpecific orderSpecificService)
         {
             _orderSpecificService = orderSpecificService;
         }
-        [Authorize(Roles="MasterUser")]
         [HttpPost]
         public async Task<IActionResult> Insert(List<ItemOrderInsertModel> list)
         {
@@ -37,8 +37,6 @@ namespace Bar.API.Controllers
             {
                 return BadRequest();
             }
-            //return list;
-            // Može se mijenjati da ne vraća ovo, ovo samo radi testa
         }
     }
 }

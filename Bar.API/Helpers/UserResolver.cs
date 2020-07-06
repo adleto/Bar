@@ -8,10 +8,10 @@ namespace Bar.API.Helpers
 {
     public class UserResolver
     {
-        public static int GetUserId(ClaimsPrincipal principal)
+        public static string GetUserId(ClaimsPrincipal principal)
         {
             var identity = principal.Identity as ClaimsIdentity;
-            return int.Parse(identity.FindFirst("UserId").Value);
+            return identity.FindFirst("UserId").Value;
         }
     }
 }

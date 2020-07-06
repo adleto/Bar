@@ -38,31 +38,33 @@ namespace Bar.Infrastructure.Services
         {
             var o = new OrderModel
             {
-                ApplicationUser = r.ApplicationUser.Username,
+                ApplicationUser = r.ApplicationUser.UserName,
                 DateTime = r.TimeOfOrder,
-                Items = new List<Tuple<ItemModel, int>>(),
+                Items = new List<ItemModel>(),
                 Id = r.Id
             };
             foreach (var item in r.ItemOrderList)
             {
-                var t = new Tuple<ItemModel, int>(new ItemModel
+                var t = new ItemModel
                 {
                     Id = item.ItemId,
                     Naziv = item.Item.Naziv,
-                    Price = item.Item.Price
-                }, item.Quantity);
+                    Price = item.PojedinacnaCijena,
+                    Count = item.Quantity
+                };
                 o.Items.Add(t);
             }
             return o;
         }
 
-        public async Task<List<OrderModel>> GetToday()
+        public async Task<List<OrderModel>> Get(DateTime odDate, DateTime doDate, int take = 2000)
         {
             var result = await _context.Order
                 .Include(o => o.ApplicationUser)
                 .Include(o => o.ItemOrderList)
                     .ThenInclude(i => i.Item)
-                .Where(o => o.TimeOfOrder.Date == DateTime.Now.Date)
+                .Where(o => o.TimeOfOrder>=odDate && o.TimeOfOrder<=doDate)
+                .Take(take)
                 .OrderByDescending(o => o.Id)
                 .ToListAsync();
             var returnModel = new List<OrderModel>();
@@ -70,21 +72,23 @@ namespace Bar.Infrastructure.Services
             return returnModel;
         }
 
-        public async Task Insert(List<ItemOrderInsertModel> list, int userId)
+        public async Task Insert(List<ItemOrderInsertModel> list, string userId)
         {
             var order = new Order
             {
-                TimeOfOrder = DateTime.Now,
+                TimeOfOrder = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Central European Standard Time"),
                 ApplicationUserId = userId
             };
             _context.Add(order);
-
+            var items = _context.Item.ToList();
             foreach (var i in list)
             {
+                var itemCijena = items.Where(x => x.Id == i.ItemId).Select(x => x.Price).First();
                 _context.Add(new ItemOrder { 
                     ItemId = i.ItemId,
                     Quantity = i.Quantity,
-                    Order = order
+                    Order = order,
+                    PojedinacnaCijena = itemCijena
                 });
             }
 

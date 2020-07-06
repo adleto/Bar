@@ -3,6 +3,7 @@ using Bar.Database.Entities;
 using Bar.Infrastructure.Helpers;
 using Bar.Infrastructure.Interfaces;
 using Bar.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,31 +19,37 @@ namespace Bar.Infrastructure.Services
     {
         private readonly Context _context;
 
-        public AuthService(Context context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public AuthService(Context context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<ApplicationUserModel> Authenticate(string username, string password)
         {
             var user = await _context.ApplicationUser
-                .Include(au => au.Role)
-                .FirstOrDefaultAsync(x => x.Username == username);
+                .FirstOrDefaultAsync(x => x.UserName == username);
             if (user != null)
             {
-                if (user.PasswordHash == AuthHelper.GenerateHash(user.PasswordSalt, password))
+                //if (user.PasswordHash == AuthHelper.GenerateHash(user.PasswordSalt, password))
+                if (await _userManager.CheckPasswordAsync(user, password))
                 {
-                    var roleModel = new RoleModel
-                    {
-                        Id = user.Role.Id,
-                        Naziv = user.Role.Name
-                    };
+                    var roles = await _userManager.GetRolesAsync(user);
                     var model = new ApplicationUserModel
                     {
                         Id = user.Id,
-                        Username = user.Username,
-                        Role = roleModel
+                        Username = user.UserName,
+                        Roles = new List<RoleModel>()
                     };
+                    foreach (var role in roles)
+                    {
+                        model.Roles.Add(new RoleModel
+                        {
+                            Naziv = role
+                        });
+                    }
                     return model;
                 }
             }
@@ -59,17 +66,13 @@ namespace Bar.Infrastructure.Services
                 }
                 var user = new ApplicationUser
                 {
-                    PasswordSalt = AuthHelper.GenerateSalt(),
-                    Username = model.Username,
-                    RoleId = model.RoleId
+                    UserName = model.Username
                 };
-                user.PasswordHash = AuthHelper.GenerateHash(user.PasswordSalt, model.Password);
-                _context.ApplicationUser.Add(user);
-                await _context.SaveChangesAsync();
+                await _userManager.CreateAsync(user, model.Password);
+                await _userManager.AddToRoleAsync(user, model.RoleNaziv);
                 var created = new ApplicationUserModel
                 {
-                    Username = user.Username,
-                    Id = user.Id
+                    Username = user.UserName
                 };
                 return created;
             }
@@ -82,7 +85,7 @@ namespace Bar.Infrastructure.Services
         private bool IsUsernameUnique(string username)
         {
             var user = _context.ApplicationUser
-                .Where(u => u.Username == username)
+                .Where(u => u.UserName == username)
                 .FirstOrDefault();
             if (user == null) return true;
             return false;

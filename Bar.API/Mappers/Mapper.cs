@@ -13,6 +13,7 @@ namespace Bar.API.Mappers
         {
             CreateMap<ItemOrder, ItemOrder>();
             CreateMap<Order, Order>();
+            CreateMap<Bar.Database.Entities.Item, Bar.Models.Item>().ReverseMap();
         }
     }
 }

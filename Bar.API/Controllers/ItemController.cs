@@ -13,9 +13,11 @@ namespace Bar.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "MasterUser")]
+    [Authorize(AuthenticationSchemes = scheme)]
     public class ItemController : BaseCrudController<Item, Item, Item, Item>
     {
+
+        private const string scheme = "BasicAuthentication";
         public ItemController(IBaseCrudService<Item, Item, Item, Item> service) : base(service)
         {
         }

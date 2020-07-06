@@ -12,6 +12,6 @@ namespace Bar.Models
         [Required]
         public string Password { get; set; }
         [Required]
-        public int RoleId { get; set; }
+        public string RoleNaziv { get; set; }
     }
 }

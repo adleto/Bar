@@ -1,0 +1,46 @@
+﻿@model Bar.Models.Account.LoginVM
+@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    div.content {
+        display: table-cell;
+        vertical-align: middle;
+    }
+</style>
+
+<div class="content">
+    <h3>Welcome</h3>
+    <hr />
+    <form id="formToSubmit" method="post" asp-action="Login">
+        <div class="form-group">
+            <label asp-for="Username"></label>
+            <input id="user1" asp-for="Username" type="text" class="form-control" placeholder="Username">
+            <span asp-validation-for="Username" class="text-danger" id="userError"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input id="pass1" asp-for="Password" type="password" class="form-control" placeholder="Password">
+            <span asp-validation-for="Password" class="text-danger" id="passError"></span>
+        </div>
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <button type="button" id="submitButton" class="btn btn-primary">Login</button>
+    </form>
+</div>
+@section Scripts{
+    <script>
+        $("#submitButton").on('click', function () {
+            if ($("#user1").val() == "") {
+                $("#userError").text("Korisničko ime mora biti uneseno.");
+                return;
+            }
+            if ($("#pass1").val() == "") {
+                $("#passError").text("Lozinka mora biti unesena.");
+                return;
+            }
+            $("#formToSubmit").submit();
+        });
+    </script>
+}
+

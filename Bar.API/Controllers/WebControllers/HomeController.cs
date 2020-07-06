@@ -8,32 +8,93 @@ using Microsoft.Extensions.Logging;
 using Bar.API.ViewModels;
 using Bar.Database.Entities;
 using Bar.Infrastructure.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Bar.Models;
 
 namespace Bar.API.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IOrderSpecific _orderService;
-        public HomeController(ILogger<HomeController> logger, IOrderSpecific orderService)
+        public HomeController(IOrderSpecific orderService)
         {
-            _logger = logger;
             _orderService = orderService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(new IndexViewModel
-            {
-                OrderList = await _orderService.Get(5)
-            });
+            return View();
         }
-        public async Task<IActionResult> Today()
+        [HttpGet]
+        public async Task<IActionResult> GetData(int take = 5)
         {
-            return View("Index", new IndexViewModel
+            try
             {
-                OrderList = await _orderService.GetToday()
-            });
+                return PartialView("_DataPartialListView", new IndexViewModel
+                {
+                    OrderList = await _orderService.Get(take)
+                });
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> Report(DateTime? odDate = null, DateTime? doDate = null, int take = 2000)
+        {
+            try
+            {
+                if (odDate == null || doDate == null) return View(new GetDataReportViewModel { 
+                    ItemCountsList = new List<ItemCounts>(),
+                    OrderList = new List<OrderModel>(),
+                    doDate = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Central European Standard Time"),
+                    odDate = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Central European Standard Time")
+                });
+                var orderList = await _orderService.Get((DateTime)odDate, (DateTime)doDate, take);
+                return View(new GetDataReportViewModel
+                {
+                    OrderList = orderList,
+                    ItemCountsList = CountItems(orderList),
+                    odDate = (DateTime)odDate,
+                    doDate = (DateTime)doDate
+                });
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        private List<ItemCounts> CountItems(List<OrderModel> orderList)
+        {
+            var list = new List<ItemCounts>();
+            var containedId = new List<int>();
+            foreach(var order in orderList)
+            {
+                foreach(var listing in order.Items)
+                {
+                    if (!containedId.Contains(listing.Id))
+                    {
+                        containedId.Add(listing.Id);
+                        list.Add(new ItemCounts
+                        {
+                            Naziv = listing.Naziv,
+                            TotalCijena = listing.Price * listing.Count,
+                            TotalCount = listing.Count,
+                            ItemId = listing.Id
+                        });
+                    }
+                    else
+                    {
+                        var entry = list.Where(x => x.ItemId == listing.Id).First();
+                        entry.TotalCijena += listing.Price * listing.Count;
+                        entry.TotalCount += listing.Count;
+                    }
+                }
+            }
+            return list;
         }
     }
 }

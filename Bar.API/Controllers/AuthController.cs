@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Bar.Infrastructure.Interfaces;
-using Bar.Infrastructure.Services;
 using Bar.Models;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bar.API.Controllers
@@ -15,7 +12,7 @@ namespace Bar.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuth _authService;
-
+        private const string scheme = "BasicAuthentication";
         public AuthController(IAuth authService)
         {
             _authService = authService;
@@ -23,7 +20,7 @@ namespace Bar.API.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        //[Authorize(Roles="MasterUser")]
+        [Authorize(AuthenticationSchemes = scheme, Roles = "MasterUser")]
         public async Task<IActionResult> Register(ApplicationUserInsertModel model)
         {
             try

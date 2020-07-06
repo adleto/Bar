@@ -14,22 +14,29 @@
             <Label Text="Ponuda"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" 
-                FontSize="35" />
-            <ListView ItemsSource="{Binding ItemsList}">
+                FontSize="25" />
+            <ListView ItemsSource="{Binding ItemsList}" HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Horizontal" Padding="3">
-                                <Button Text="-" CommandParameter="{Binding ItemId}" Clicked="Lower_Clicked"></Button>
+                                <Button WidthRequest="45" Text="-" 
+                                        CommandParameter="{Binding ItemId}"
+                                        Clicked="Lower_Clicked">
+                                </Button>
                                 <Label Text="{Binding ItemName}" 
-                                d:Text="Naziv"
-                                HorizontalOptions="StartAndExpand"
-                                FontSize="25" />
-                                <Label Text="{Binding Quantity}" 
-                                d:Text="Količina"
-                                HorizontalOptions="StartAndExpand"
-                                FontSize="25" />
-                                <Button Text="+" CommandParameter="{Binding ItemId}" Clicked="Raise_Clicked"></Button>
+                                    d:Text="Naziv"
+                                    HorizontalOptions="StartAndExpand"
+                                    FontSize="25" LineBreakMode="CharacterWrap" />
+                                <Label Text="{Binding Quantity}"
+                                    HorizontalOptions="StartAndExpand"
+                                    d:Text="Količina"
+                                    FontSize="25"
+                                    HorizontalTextAlignment="End" />
+                                <Button WidthRequest="45" Text="+" 
+                                        CommandParameter="{Binding ItemId}" 
+                                        Clicked="Raise_Clicked">
+                                </Button>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>

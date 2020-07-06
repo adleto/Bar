@@ -18,9 +18,11 @@ namespace Bar.API
 
             using (var scope = host.Services.CreateScope())
             {
+                var services = scope.ServiceProvider;
+                var serviceProvider = services.GetRequiredService<IServiceProvider>();
                 var service = scope.ServiceProvider.GetRequiredService<Context>();
                 Seeding.MigrateDatabase(service);
-                Seeding.Seed(service);
+                Seeding.Seed(serviceProvider).Wait();
             }
 
             host.Run();

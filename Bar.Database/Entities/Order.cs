@@ -12,6 +12,6 @@ namespace Bar.Database.Entities
         public virtual List<ItemOrder> ItemOrderList { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
         [ForeignKey(nameof(ApplicationUser))]
-        public int ApplicationUserId { get; set; }
+        public string ApplicationUserId { get; set; }
     }
 }

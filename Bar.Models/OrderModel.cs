@@ -8,7 +8,7 @@ namespace Bar.Models
     {
         public int Id { get; set; }
         public DateTime DateTime { get; set; }
-        public List<Tuple<ItemModel, int>> Items { get; set; }
+        public List<ItemModel> Items { get; set; }
         public string ApplicationUser { get; set; }
     }
 }

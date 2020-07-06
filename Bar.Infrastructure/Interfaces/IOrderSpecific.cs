@@ -9,8 +9,8 @@ namespace Bar.Infrastructure.Interfaces
 {
     public interface IOrderSpecific
     {
-        Task Insert(List<ItemOrderInsertModel> list, int userId);
-        Task<List<OrderModel>> GetToday();
+        Task Insert(List<ItemOrderInsertModel> list, string userId);
+        Task<List<OrderModel>> Get(DateTime odDate, DateTime doDate, int take = 2000);
         Task<List<OrderModel>> Get(int numberOf);
     }
 }

@@ -54,8 +54,8 @@ namespace Bar.API.Helpers
 
             var claims = new List<Claim> {
                 new Claim(ClaimTypes.NameIdentifier, user.Username),
-                new Claim("UserId", user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.Naziv)
+                new Claim("UserId", user.Id),
+                new Claim(ClaimTypes.Role, user.Roles[0].Naziv)
             };
 
             var identity = new ClaimsIdentity(claims, Scheme.Name);

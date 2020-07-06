@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Pregled Artikala";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="modal-placeholder"></div>
+<div class="text-center row justify-content-center">
+    <div>
+        <h1>Pregled Artikala</h1>
+        <br />
+        
+        <div id="dataStorage"></div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            getData();
+        });
+
+        function getData() {
+            var container = $('#dataStorage');
+            $.ajax({
+                url: '/Item/GetItemList',
+                contentType: 'application/html ; charset:utf-8',
+                type: 'GET',
+                dataType: 'html'
+            })
+                .done(function (result) { container.empty().append(result); })
+        }
+    </script>
+}
