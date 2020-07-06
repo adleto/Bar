@@ -74,9 +74,18 @@ namespace Bar.Infrastructure.Services
 
         public async Task Insert(List<ItemOrderInsertModel> list, string userId)
         {
+            DateTime now;
+            try
+            {
+                now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, ("Central European Standard Time"));
+            }
+            catch (TimeZoneNotFoundException)
+            {
+                now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Europe/Belgrade");
+            }
             var order = new Order
             {
-                TimeOfOrder = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Central European Standard Time"),
+                TimeOfOrder = now,
                 ApplicationUserId = userId
             };
             _context.Add(order);
@@ -92,6 +101,20 @@ namespace Bar.Infrastructure.Services
                 });
             }
 
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveOrder(int id)
+        {
+            var order = _context.Order.Find(id);
+            var itemOrderStavke = await _context.ItemOrder
+                .Where(x => x.OrderId == id)
+                .ToListAsync();
+            foreach(var i in itemOrderStavke)
+            {
+                _context.ItemOrder.Remove(i);
+            }
+            _context.Order.Remove(order);
             await _context.SaveChangesAsync();
         }
     }

@@ -66,15 +66,6 @@ namespace Bar.Mobile.Service
             catch /*(FlurlHttpException ex)*/
             {
                 throw;
-                //var errors = await ex.GetResponseJsonAsync<Dictionary<string, string[]>>();
-                //var stringBuilder = new StringBuilder();
-                //foreach (var error in errors)
-                //{
-                //    stringBuilder.AppendLine($"{error.Key}, ${string.Join(",", error.Value)}");
-                //}
-
-                //await Application.Current.MainPage.DisplayAlert("Error", "Not authorized", "OK");
-                //return default;
             }
         }
         public async Task<T> Update<T>(object id, object request)
@@ -86,15 +77,6 @@ namespace Bar.Mobile.Service
             catch /*(FlurlHttpException ex)*/
             {
                 throw;
-                //var errors = await ex.GetResponseJsonAsync<Dictionary<string, string[]>>();
-                //var stringBuilder = new StringBuilder();
-                //foreach (var error in errors)
-                //{
-                //    stringBuilder.AppendLine($"{error.Key}, ${string.Join(",", error.Value)}");
-                //}
-
-                //await Application.Current.MainPage.DisplayAlert("Error", "Not authorized", "OK");
-                //return default;
             }
         }
     }

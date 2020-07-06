@@ -46,11 +46,23 @@ namespace Bar.API.Controllers
         {
             try
             {
+                DateTime odD;
+                DateTime doD;
+                try
+                {
+                    odD = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, ("Central European Standard Time"));
+                    doD = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, ("Central European Standard Time"));
+                }
+                catch (TimeZoneNotFoundException)
+                {
+                    odD = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Europe/Belgrade");
+                    doD = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Europe/Belgrade");
+                }
                 if (odDate == null || doDate == null) return View(new GetDataReportViewModel { 
                     ItemCountsList = new List<ItemCounts>(),
                     OrderList = new List<OrderModel>(),
-                    doDate = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Central European Standard Time"),
-                    odDate = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Central European Standard Time")
+                    doDate = doD,
+                    odDate = odD
                 });
                 var orderList = await _orderService.Get((DateTime)odDate, (DateTime)doDate, take);
                 return View(new GetDataReportViewModel
@@ -66,7 +78,19 @@ namespace Bar.API.Controllers
                 return BadRequest();
             }
         }
-
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id, string returnUrl = "/Home/")
+        {
+            try
+            {
+                await _orderService.RemoveOrder(id);
+                return Redirect(returnUrl);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
         private List<ItemCounts> CountItems(List<OrderModel> orderList)
         {
             var list = new List<ItemCounts>();

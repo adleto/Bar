@@ -12,5 +12,6 @@ namespace Bar.Infrastructure.Interfaces
         Task Insert(List<ItemOrderInsertModel> list, string userId);
         Task<List<OrderModel>> Get(DateTime odDate, DateTime doDate, int take = 2000);
         Task<List<OrderModel>> Get(int numberOf);
+        Task RemoveOrder(int id);
     }
 }

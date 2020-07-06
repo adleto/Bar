@@ -63,6 +63,7 @@
                     <td>Stavke</td>
                     <td>Iznos</td>
                     <td>User</td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
@@ -88,6 +89,9 @@
                             totalSveCijena2 += cijenaStavke;
                         }
                         <td>@order.ApplicationUser</td>
+                        <td>
+                            <a href="@Url.Action("Delete", "Home", new { id = order.Id, returnUrl = Context.Request.Path })"><i class="material-icons text-danger">delete</i></a>
+                        </td>
                     </tr>
                 }
             </tbody>

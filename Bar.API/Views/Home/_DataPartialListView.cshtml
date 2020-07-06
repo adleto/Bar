@@ -8,6 +8,7 @@
                 <td>Stavke</td>
                 <td>Iznos</td>
                 <td>User</td>
+                <td></td>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +31,9 @@
                     </td>
                     <td>@(cijenaStavke.ToString("F")) KM</td>
                     <td>@order.ApplicationUser</td>
+                    <td>
+                        <a href="@Url.Action("Delete", "Home", new { id = order.Id })"><i class="material-icons text-danger">delete</i></a>
+                    </td>
                 </tr>
             }
         </tbody>
