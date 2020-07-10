@@ -7,7 +7,7 @@
         Vrijeme do:
         <input asp-for="doDate" id="date2" type="text" />
         <br />
-        <button type="submit">Generiši izvještaj</button>
+        <button style="margin-top:2px;" class="btn btn-info" type="submit">Generiši izvještaj</button>
     </form>
 </div>
 <div>
@@ -51,9 +51,6 @@
 
 <div>
     <h3>Transakcije iz odabranog perioda</h3>
-    @{
-        decimal totalSveCijena2 = 0;
-    }
     <div class="text-center table-responsive row">
         <table class="table table-bordered">
             <thead>
@@ -71,7 +68,7 @@
                 {
                     decimal cijenaStavke = 0;
                     <tr>
-                        <td>@order.Id</td>
+                        <td><span>@order.Id</span>.</td>
                         <td>@order.DateTime.ToString("dd/MM/yyyy HH:mm:ss")</td>
                         <td>
                             @foreach (var x in order.Items)
@@ -85,9 +82,6 @@
                             }
                         </td>
                         <td>@(cijenaStavke.ToString("F")) KM</td>
-                        @{
-                            totalSveCijena2 += cijenaStavke;
-                        }
                         <td>@order.ApplicationUser</td>
                         <td>
                             <a href="@Url.Action("Delete", "Home", new { id = order.Id, returnUrl = Context.Request.Path })"><i class="material-icons text-danger">delete</i></a>
@@ -100,7 +94,8 @@
                     <td>Total: @Model.OrderList.Count</td>
                     <td></td>
                     <td></td>
-                    <td>Total: @totalSveCijena2.ToString("F")</td>
+                    <td>Total: @totalSveCijena.ToString("F")</td>
+                    <td></td>
                     <td></td>
                 </tr>
             </tfoot>

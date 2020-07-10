@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Bar.Database.Entities;
+using Bar.Infrastructure.Interfaces;
 using Bar.Infrastructure.Repository;
 using Bar.Models.Items;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.V3.Pages.Internal.Account;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bar.API.Controllers.WebControllers
@@ -14,10 +16,10 @@ namespace Bar.API.Controllers.WebControllers
     [Authorize]
     public class ItemController : Controller
     {
-        private readonly IBaseCrudService<Item, Item, Item, Item> _itemService;
+        private readonly IItem _itemService;
         private readonly IMapper _mapper;
 
-        public ItemController(IBaseCrudService<Item, Item, Item, Item> itemService, IMapper mapper)
+        public ItemController(IItem itemService, IMapper mapper)
         {
             _itemService = itemService;
             _mapper = mapper;
@@ -51,7 +53,9 @@ namespace Bar.API.Controllers.WebControllers
                 {
                     model = await _itemService.Get(id);
                 }
-                return PartialView("_ItemPartialView", _mapper.Map<Bar.Models.Item>(model));
+                var returnModel = _mapper.Map<Bar.Models.Item>(model);
+                returnModel.Vrste = _mapper.Map<List<Bar.Models.Item>>(await _itemService.GetVrste());
+                return PartialView("_ItemPartialView", returnModel);
             }
             catch
             {
@@ -69,6 +73,7 @@ namespace Bar.API.Controllers.WebControllers
                     await _itemService.Insert(_mapper.Map<Item>(model));
                     return Ok("Ok");
                 }
+                model.Vrste = _mapper.Map<List<Bar.Models.Item>>(await _itemService.GetVrste());
                 return PartialView("_ItemPartialView", model);
             }
             catch
@@ -87,7 +92,8 @@ namespace Bar.API.Controllers.WebControllers
                     await _itemService.Update(model.Id, _mapper.Map<Item>(model));
                     return Ok("Ok");
                 }
-                return PartialView("_UserPartialView", model);
+                model.Vrste = _mapper.Map<List<Bar.Models.Item>>(await _itemService.GetVrste());
+                return PartialView("_ItemPartialView", model);
             }
             catch
             {
@@ -99,7 +105,7 @@ namespace Bar.API.Controllers.WebControllers
         {
             try
             {
-                await _itemService.Delete(id);
+                await _itemService.ToggleActive(id);
                 return Ok("Ok");
             }
             catch

@@ -15,12 +15,15 @@
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" 
                 FontSize="25" />
+            <Picker ItemsSource="{Binding LocationList}" ItemDisplayBinding="{Binding Description}" SelectedItem="{Binding Location}">
+                <Picker.SelectedIndex>0</Picker.SelectedIndex>
+            </Picker>
             <ListView ItemsSource="{Binding ItemsList}" HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Horizontal" Padding="3">
-                                <Button WidthRequest="45" Text="-" 
+                                <Button WidthRequest="55" Text="-" 
                                         CommandParameter="{Binding ItemId}"
                                         Clicked="Lower_Clicked">
                                 </Button>
@@ -33,7 +36,12 @@
                                     d:Text="Količina"
                                     FontSize="25"
                                     HorizontalTextAlignment="End" />
-                                <Button WidthRequest="45" Text="+" 
+                                <Entry Text="{Binding DodatniOpis}"
+                                       WidthRequest="30"
+                                       Focused="Entry_Focused"
+                                       Unfocused="Entry_Unfocused">
+                                </Entry>
+                                <Button WidthRequest="55" Text="+" 
                                         CommandParameter="{Binding ItemId}" 
                                         Clicked="Raise_Clicked">
                                 </Button>

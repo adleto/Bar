@@ -18,7 +18,7 @@
             <Label Text="Username" Padding="5"></Label>
                 <Entry Text="{Binding Username}" x:Name="entryUsernameField" Margin="5, 0, 5, 0"></Entry>
                 <Label Text="Password" Padding="5"></Label>
-                <Entry Text="{Binding Password}" x:Name="entryPasswordField" Margin="5, 0, 5, 0"></Entry>
+                <Entry Text="{Binding Password}" x:Name="entryPasswordField" Margin="5, 0, 5, 0" IsPassword="True"></Entry>
                 <Button Margin="20, 0, 20, 0" x:Name="loginButton" Text="Login" Clicked="loginButton_Clicked"></Button>
             </StackLayout>
         <StackLayout

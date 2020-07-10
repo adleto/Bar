@@ -23,5 +23,6 @@ namespace Bar.Database
         public DbSet<Order> Order { get; set; }
         public DbSet<ItemOrder> ItemOrder { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
+        public DbSet<Location> Location { get; set; }
     }
 }

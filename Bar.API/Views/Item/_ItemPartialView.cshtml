@@ -32,6 +32,17 @@
                         <input asp-for="Price" class="form-control" />
                         <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
+                    <div class="form-group">
+                        <label class="font-weight-bold">Spada u</label>
+                        <select asp-for="ReferringToId">
+                            <option value="0">Ništa</option>
+                            @foreach(var x in Model.Vrste)
+                            {
+                                <option value="@x.Id">@x.Naziv</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ReferringToId" class="text-danger"></span>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">

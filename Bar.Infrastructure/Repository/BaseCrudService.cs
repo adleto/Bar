@@ -15,7 +15,7 @@ namespace Bar.Infrastructure.Repository
     {
         public BaseCrudService(Context context, IMapper mapper) : base(context, mapper) {}
 
-        public async Task Delete(int id)
+        public virtual async Task Delete(int id)
         {
             try {
             var obj = _context.Set<TEntity>().Find(id);
@@ -28,7 +28,7 @@ namespace Bar.Infrastructure.Repository
             }
         }
 
-        public async Task<TModel> Insert(TInsert obj)
+        public virtual async Task<TModel> Insert(TInsert obj)
         {
             var entity = _mapper.Map<TEntity>(obj);
             _context.Set<TEntity>().Add(entity);
@@ -36,7 +36,7 @@ namespace Bar.Infrastructure.Repository
             return _mapper.Map<TModel>(entity);
         }
 
-        public async Task<TModel> Update(int id, TUpdate obj)
+        public virtual async Task<TModel> Update(int id, TUpdate obj)
         {
             var entity = _mapper.Map<TEntity>(obj);
             _context.Set<TEntity>().Attach(entity);

@@ -46,5 +46,17 @@ namespace Bar.Mobile.Views
         {
             await model.CreateOrder();
         }
+
+        private void Entry_Focused(object sender, FocusEventArgs e)
+        {
+            var field = (Entry)sender;
+            field.WidthRequest = 240;
+        }
+
+        private void Entry_Unfocused(object sender, FocusEventArgs e)
+        {
+            var field = (Entry)sender;
+            field.WidthRequest = 30;
+        }
     }
 }

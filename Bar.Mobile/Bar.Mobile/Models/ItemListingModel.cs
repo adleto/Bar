@@ -9,7 +9,6 @@ namespace Bar.Mobile.Models
     {
         public string ItemName { get; set; }
         public int ItemId { get; set; }
-        //public int Quantity { get; set; }
         private int quantity = 0;
         public int Quantity
         {
@@ -20,5 +19,7 @@ namespace Bar.Mobile.Models
                 }
             } 
         }
+        private string dodatniOpis = string.Empty;
+        public string DodatniOpis { get { return dodatniOpis; } set { SetProperty(ref dodatniOpis, value); } }
     }
 }

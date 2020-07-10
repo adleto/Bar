@@ -6,5 +6,6 @@ namespace Bar.Models
     {
         public int ItemId { get; set; }
         public int Quantity { get; set; }
+        public string DodatniOpis { get; set; }
     }
 }

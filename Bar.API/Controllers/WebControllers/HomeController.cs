@@ -10,6 +10,8 @@ using Bar.Database.Entities;
 using Bar.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Bar.Models;
+using Bar.API.Helpers;
+using Microsoft.AspNetCore.Identity;
 
 namespace Bar.API.Controllers
 {
@@ -17,9 +19,11 @@ namespace Bar.API.Controllers
     public class HomeController : Controller
     {
         private readonly IOrderSpecific _orderService;
-        public HomeController(IOrderSpecific orderService)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public HomeController(IOrderSpecific orderService, UserManager<ApplicationUser> userManager)
         {
             _orderService = orderService;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -83,7 +87,7 @@ namespace Bar.API.Controllers
         {
             try
             {
-                await _orderService.RemoveOrder(id);
+                await _orderService.ToggleActivity(id, _userManager.GetUserId(User));
                 return Redirect(returnUrl);
             }
             catch
@@ -99,20 +103,32 @@ namespace Bar.API.Controllers
             {
                 foreach(var listing in order.Items)
                 {
-                    if (!containedId.Contains(listing.Id))
+                    int realId;
+                    string realNaziv;
+                    if (listing.ReferringToId != null)
                     {
-                        containedId.Add(listing.Id);
+                        realId = (int)listing.ReferringToId;
+                        realNaziv = listing.ReferringToNaziv;
+                    }
+                    else
+                    {
+                        realId = listing.Id;
+                        realNaziv = listing.Naziv;
+                    }
+                    if (!containedId.Contains(realId))
+                    {
+                        containedId.Add(realId);
                         list.Add(new ItemCounts
                         {
-                            Naziv = listing.Naziv,
                             TotalCijena = listing.Price * listing.Count,
                             TotalCount = listing.Count,
-                            ItemId = listing.Id
+                            ItemId = realId,
+                            Naziv = realNaziv
                         });
                     }
                     else
                     {
-                        var entry = list.Where(x => x.ItemId == listing.Id).First();
+                        var entry = list.Where(x => x.ItemId == realId).First();
                         entry.TotalCijena += listing.Price * listing.Count;
                         entry.TotalCount += listing.Count;
                     }

@@ -19,15 +19,28 @@ namespace Bar.Infrastructure.Services
         {
             _context = context;
         }
+        public OrderModel GetById(int id)
+        {
+            var result = _context.Order
+                .Include(o => o.ApplicationUser)
+                .Include(o => o.Location)
+                .Include(o => o.ItemOrderList)
+                    .ThenInclude(i => i.Item)
+                .Where(o => o.Id == id)
+                .First();
+            return MapToOrderModel(result);
+        }
 
         public async Task<List<OrderModel>> Get(int numberOf)
         {
             var result = await _context.Order
                 .Include(o => o.ApplicationUser)
+                .Include(o => o.Location)
                 .Include(o => o.ItemOrderList)
                     .ThenInclude(i => i.Item)
-                .OrderByDescending(o => o.Id)
+                .Where(o => o.Active == true)
                 .Take(numberOf)
+                .OrderByDescending(o => o.Id)
                 .ToListAsync();
             var returnModel = new List<OrderModel>();
             result.ForEach(r => returnModel.Add(MapToOrderModel(r)));
@@ -41,8 +54,12 @@ namespace Bar.Infrastructure.Services
                 ApplicationUser = r.ApplicationUser.UserName,
                 DateTime = r.TimeOfOrder,
                 Items = new List<ItemModel>(),
-                Id = r.Id
+                Id = r.Id,
+                Active = r.Active
             };
+            if (r.LastChangeMadeBy != null) o.ModifiedBy = r.LastChangeMadeBy.UserName;
+            if (r.Location != null) o.Location = r.Location.Description;
+            else o.Location = "";
             foreach (var item in r.ItemOrderList)
             {
                 var t = new ItemModel
@@ -50,8 +67,11 @@ namespace Bar.Infrastructure.Services
                     Id = item.ItemId,
                     Naziv = item.Item.Naziv,
                     Price = item.PojedinacnaCijena,
-                    Count = item.Quantity
+                    Count = item.Quantity,
+                    ReferringToId = item.Item.ReferringToId,
+                    DodatniOpis = item.DodatniOpis
                 };
+                if (item.Item.ReferringTo != null) t.ReferringToNaziv = item.Item.ReferringTo.Naziv;
                 o.Items.Add(t);
             }
             return o;
@@ -61,9 +81,11 @@ namespace Bar.Infrastructure.Services
         {
             var result = await _context.Order
                 .Include(o => o.ApplicationUser)
+                .Include(o => o.Location)
                 .Include(o => o.ItemOrderList)
                     .ThenInclude(i => i.Item)
-                .Where(o => o.TimeOfOrder>=odDate && o.TimeOfOrder<=doDate)
+                        .ThenInclude(it => it.ReferringTo)
+                .Where(o => o.Active == true && o.TimeOfOrder>=odDate && o.TimeOfOrder<=doDate)
                 .Take(take)
                 .OrderByDescending(o => o.Id)
                 .ToListAsync();
@@ -72,7 +94,7 @@ namespace Bar.Infrastructure.Services
             return returnModel;
         }
 
-        public async Task Insert(List<ItemOrderInsertModel> list, string userId)
+        public async Task Insert(OrderInsertModel model, string userId)
         {
             DateTime now;
             try
@@ -86,36 +108,60 @@ namespace Bar.Infrastructure.Services
             var order = new Order
             {
                 TimeOfOrder = now,
-                ApplicationUserId = userId
+                ApplicationUserId = userId,
+                Active = true,
+                LocationId = model.LocationId
             };
             _context.Add(order);
             var items = _context.Item.ToList();
-            foreach (var i in list)
+            foreach (var i in model.List)
             {
                 var itemCijena = items.Where(x => x.Id == i.ItemId).Select(x => x.Price).First();
-                _context.Add(new ItemOrder { 
+                var insertModel = new ItemOrder
+                {
                     ItemId = i.ItemId,
                     Quantity = i.Quantity,
                     Order = order,
                     PojedinacnaCijena = itemCijena
-                });
+                };
+                if (!string.IsNullOrEmpty(i.DodatniOpis)) insertModel.DodatniOpis = i.DodatniOpis;
+                _context.Add(insertModel);
             }
 
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveOrder(int id)
+        public async Task ToggleActivity(int id, string userId)
         {
             var order = _context.Order.Find(id);
-            var itemOrderStavke = await _context.ItemOrder
-                .Where(x => x.OrderId == id)
-                .ToListAsync();
-            foreach(var i in itemOrderStavke)
-            {
-                _context.ItemOrder.Remove(i);
-            }
-            _context.Order.Remove(order);
+            if (DateTime.Now.AddDays(-2) > order.TimeOfOrder) return;
+            if (order.Active) order.Active = false;
+            else order.Active = true;
+            order.LastChangeMadeById = userId;
+            //var itemOrderStavke = await _context.ItemOrder
+            //    .Where(x => x.OrderId == id)
+            //    .ToListAsync();
+            //foreach(var i in itemOrderStavke)
+            //{
+            //    _context.ItemOrder.Remove(i);
+            //}
+            //_context.Order.Remove(order);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<OrderModel>> GetMijenjanoStanje(int takeDays = 30)
+        {
+            var result = await _context.Order
+                .Include(o => o.ApplicationUser)
+                .Include(o => o.LastChangeMadeBy)
+                .Include(o => o.ItemOrderList)
+                    .ThenInclude(i => i.Item)
+                .Where(o => o.LastChangeMadeBy != null && DateTime.Now.AddDays(-30) <= o.TimeOfOrder)
+                .OrderByDescending(o => o.Id)
+                .ToListAsync();
+            var returnModel = new List<OrderModel>();
+            result.ForEach(r => returnModel.Add(MapToOrderModel(r)));
+            return returnModel;
         }
     }
 }

@@ -1,56 +1,57 @@
-﻿@model Bar.API.ViewModels.IndexViewModel
-@{ 
-    var latest = Model.OrderList.Max(o => o.Id);
+﻿@model List<Bar.Models.OrderModel>
+@{
+    ViewData["Title"] = "Narudžbe sa mijenjanim stanjem";
 }
+
 <div class="text-center myFace table-responsive row">
+    <h2>Narudžbe sa mijenjanim stanjem (zadnjih 30 dana)</h2>
     <table class="table table-bordered">
         <thead>
             <tr>
                 <td>#</td>
+                <td>Status</td>
                 <td>Vrijeme</td>
                 <td>Stavke</td>
-                <td>Lokacija</td>
                 <td>Iznos</td>
                 <td>User</td>
+                <td>User - Last Modified</td>
                 <td></td>
             </tr>
         </thead>
         <tbody>
-            @foreach (var order in Model.OrderList)
+            @foreach (var order in Model)
             {
                 decimal cijenaStavke = 0;
-                <tr id="@order.Id">
+                <tr>
                     <td>@order.Id</td>
+                    @if (order.Active)
+                    {
+                        <td>Aktivna</td>
+                    }
+                    else
+                    {
+                        <td>Obrisana</td>
+                    }
                     <td>@order.DateTime.ToString("dd/MM/yyyy HH:mm:ss")</td>
                     <td>
                         @foreach (var x in order.Items)
                         {
                             cijenaStavke += (x.Price * x.Count);
                             <span>@x.Naziv x@(x.Count)</span>
-                            if (!string.IsNullOrEmpty(x.DodatniOpis)){ 
-                                <span>(@x.DodatniOpis)</span>
-                            }
                             @if (order.Items.IndexOf(x) != order.Items.Count - 1)
                             {
                                 <span>,</span>
                             }
                         }
                     </td>
-                    <td>@order.Location</td>
                     <td>@(cijenaStavke.ToString("F")) KM</td>
                     <td>@order.ApplicationUser</td>
+                    <td>@order.ModifiedBy</td>
                     <td>
-                        <a href="@Url.Action("Delete", "Home", new { id = order.Id })"><i class="material-icons text-danger">delete</i></a>
+                        <a href="@Url.Action("Delete", "Home", new { id = order.Id })">ToggleStatus</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
-<script>
-    var row = $("#@latest");
-    row.css("background", "lightgreen");
-    setTimeout(function () {
-        row.css("background", "white");
-    }, 7000);
-</script>

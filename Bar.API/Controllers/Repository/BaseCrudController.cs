@@ -20,12 +20,12 @@ namespace Bar.API.Controllers.Repository
             _service = service;
         }
         [HttpPost]
-        public async Task<TModel> Insert(TInsert obj)
+        public virtual async Task<TModel> Insert(TInsert obj)
         {
             return await _service.Insert(obj);
         }
         [HttpPut("{id}")]
-        public async Task<TModel> Update(int id, [FromBody]TUpdate obj)
+        public virtual async Task<TModel> Update(int id, [FromBody]TUpdate obj)
         {
             return await _service.Update(id, obj);
         }

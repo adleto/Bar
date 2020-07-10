@@ -10,5 +10,8 @@ namespace Bar.Models
         public DateTime DateTime { get; set; }
         public List<ItemModel> Items { get; set; }
         public string ApplicationUser { get; set; }
+        public string ModifiedBy { get; set; }
+        public string Location { get; set; }
+        public bool Active { get; set; }
     }
 }

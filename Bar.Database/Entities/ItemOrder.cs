@@ -15,5 +15,6 @@ namespace Bar.Database.Entities
         public virtual Order Order { get; set; }
         public int Quantity { get; set; }
         public decimal PojedinacnaCijena { get; set; }
+        public string DodatniOpis { get; set; }
     }
 }

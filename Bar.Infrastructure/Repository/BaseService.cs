@@ -20,12 +20,12 @@ namespace Bar.Infrastructure.Repository
             _mapper = mapper;
         }
 
-        public async virtual Task<List<TModel>> Get(TSearch obj)
+        public virtual async Task<List<TModel>> Get(TSearch obj)
         {
             return _mapper.Map<List<TModel>>(await _context.Set<TEntity>().ToListAsync());
         }
 
-        public async virtual Task<TModel> Get(int id)
+        public virtual async Task<TModel> Get(int id)
         {
             return _mapper.Map<TModel>(await _context.Set<TEntity>().FindAsync(id));
         }

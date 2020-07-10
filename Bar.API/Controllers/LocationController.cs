@@ -15,16 +15,16 @@ namespace Bar.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = scheme)]
-    public class ItemController : BaseCrudController<Item, Item, Item, Item>
+    public class LocationController : BaseCrudController<Bar.Models.Location, Location, Bar.Models.Location, Bar.Models.Location>
     {
-        private readonly IItem _service;
         private const string scheme = "BasicAuthentication";
-        public ItemController(IItem service) : base(service)
+        private readonly ILocation _service;
+        public LocationController(ILocation service) : base(service)
         {
             _service = service;
         }
         [HttpGet]
-        public override async Task<List<Item>> Get([FromQuery] Item obj = null)
+        public override async Task<List<Bar.Models.Location>> Get([FromQuery] Location obj = null)
         {
             var result = await _service.Get(obj);
             return result;

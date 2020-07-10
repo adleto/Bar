@@ -43,9 +43,6 @@ namespace Bar.API
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<Context>();
-            //services.AddDbContext<Context>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("Bar.API")));
-            //services.AddControllers();
             //services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddControllersWithViews();
             services.AddSignalR();
@@ -114,9 +111,12 @@ namespace Bar.API
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             }).AddScheme<AuthenticationSchemeOptions, AuthHandler>("BasicAuthentication", null);
 
-            services.AddScoped<IBaseCrudService<Order, Order, Order, Order>, OrderService>();
-            services.AddScoped<IBaseCrudService<ItemOrder, ItemOrder, ItemOrder, ItemOrder>, ItemOrderService>();
-            services.AddScoped<IBaseCrudService<Item, Item, Item, Item>, ItemService>();
+            //services.AddScoped<IBaseCrudService<Order, Order, Order, Order>, OrderService>();
+            //services.AddScoped<IBaseCrudService<ItemOrder, ItemOrder, ItemOrder, ItemOrder>, ItemOrderService>();
+            //services.AddScoped<IBaseCrudService<Item, Item, Item, Item>, ItemService>();
+            services.AddScoped<IItem, ItemService>();
+
+            services.AddScoped<ILocation, LocationService>();
 
             services.AddScoped<IAuth, AuthService>();
             services.AddScoped<IOrderSpecific, OrderSpecificService>();

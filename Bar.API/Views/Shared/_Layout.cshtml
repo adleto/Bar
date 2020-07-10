@@ -53,13 +53,15 @@
             {
                 <a asp-controller="Home" asp-action="Index">Zadnje narudžbe</a> <span>|</span>
                 <a asp-controller="Home" asp-action="Report">Report</a> <span>|</span>
-                <a asp-controller="Item" asp-action="Index">Upravljanje artiklima</a>
+                <a asp-controller="Item" asp-action="Index">Upravljanje artiklima</a> <span>|</span>
+                <a asp-controller="Location" asp-action="Index">Upravljanje enterijerom</a>
                 if (User.IsInRole("MasterUser"))
                 {
                     <span> | </span> <a asp-controller="User" asp-action="Index">Upravljanje korisnicima</a>
+                    <span> | </span> <a asp-controller="Order" asp-action="MijenjanoStanje">Pregled mijenjanih narudžbi</a>
                 }
             }
-            </div>
+        </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

@@ -17,19 +17,16 @@ using Xamarin.Forms;
 
 namespace Bar.Mobile.ViewModels
 {
-    public class MainPageViewModel : /*INotifyPropertyChanged*/BaseViewModel
+    public class MainPageViewModel : BaseViewModel
     {
-        //public event PropertyChangedEventHandler PropertyChanged;
         private readonly APIService _itemsService = new APIService("Item");
         private readonly APIService _orderSpecificService = new APIService("OrderSpecific");
+        private readonly APIService _locationService = new APIService("Location");
         public ObservableCollection<ItemListingModel> ItemsList { get; set; } = new ObservableCollection<ItemListingModel>();
-        //public ICommand InitCommand { get; set; }
-        //public ICommand RaiseQuantity { private set; get; }
-        public MainPageViewModel()
-        {
-            //InitCommand = new Command(async () => await Init());
-            //RaiseQuantity = new Command((id) => DoRaise(id));
-        }
+        private ObservableCollection<Bar.Models.Location> _LocationList = new ObservableCollection<Bar.Models.Location>();
+        public ObservableCollection<Bar.Models.Location> LocationList { get { return _LocationList; } set { SetProperty(ref _LocationList, value); } }
+        private Bar.Models.Location location;
+        public Bar.Models.Location Location { get { return location; } set { SetProperty(ref location, value); } }
         public void DoRaise(int? id)
         {
             var choosen = ItemsList.Where(i => i.ItemId == id).FirstOrDefault();
@@ -53,19 +50,25 @@ namespace Bar.Mobile.ViewModels
                         list.Add(new ItemOrderInsertModel
                         {
                             ItemId = i.ItemId,
-                            Quantity = i.Quantity
+                            Quantity = i.Quantity,
+                            DodatniOpis = i.DodatniOpis
                         });
                         i.Quantity = 0;
+                        i.DodatniOpis = string.Empty;
                     }
                 }
                 if (notAllZero)
                 {
-                    await _orderSpecificService.Insert<List<ItemOrderInsertModel>>(list);
-                    //HubConnection con = new HubConnectionBuilder().WithUrl($"http://10.0.2.2:52768/myHub").Build();
+                    var model = new OrderInsertModel
+                    {
+                        List = list,
+                        LocationId = null
+                    };
+                    if (Location != null && Location.Id != 0) model.LocationId = Location.Id;
+                    await _orderSpecificService.Insert<OrderInsertModel>(model);
                     var serverUrl = Preferences.Get("serverUrl", "");
                     HubConnection con = new HubConnectionBuilder().WithUrl($"{serverUrl}/myHub").Build();
                     
-                    //await con.SendAsync("RefreshMessage");
                     await con.StartAsync();
                     await con.InvokeAsync("SendMessage");
                     await con.StopAsync();
@@ -80,8 +83,16 @@ namespace Bar.Mobile.ViewModels
         public async Task Init()
         {
             try {
+                var locationList = await _locationService.Get<List<Bar.Models.Location>>(null);
                 var list = await _itemsService.Get<List<Bar.Models.Item>>(null);
                 ItemsList.Clear();
+                LocationList.Clear();
+                locationList.Insert(0, new Bar.Models.Location { 
+                    Description = "",
+                    Id = 0
+                });
+                LocationList = new ObservableCollection<Bar.Models.Location>(locationList);
+                
                 foreach (var item in list)
                 {
                     ItemsList.Add(new ItemListingModel
@@ -92,10 +103,7 @@ namespace Bar.Mobile.ViewModels
                     });
                 }
             }
-            catch
-            {
-                
-            }
+            catch{}
         }
     }
 }

@@ -26,11 +26,11 @@ namespace Bar.API.Controllers
             _orderSpecificService = orderSpecificService;
         }
         [HttpPost]
-        public async Task<IActionResult> Insert(List<ItemOrderInsertModel> list)
+        public async Task<IActionResult> Insert(OrderInsertModel model)
         {
             try
             {
-                await _orderSpecificService.Insert(list, UserResolver.GetUserId(HttpContext.User));
+                await _orderSpecificService.Insert(model, UserResolver.GetUserId(HttpContext.User));
                 return Ok();
             }
             catch
