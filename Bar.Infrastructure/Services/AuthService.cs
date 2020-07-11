@@ -33,7 +33,6 @@ namespace Bar.Infrastructure.Services
                 .FirstOrDefaultAsync(x => x.UserName == username);
             if (user != null)
             {
-                //if (user.PasswordHash == AuthHelper.GenerateHash(user.PasswordSalt, password))
                 if (await _userManager.CheckPasswordAsync(user, password))
                 {
                     var roles = await _userManager.GetRolesAsync(user);

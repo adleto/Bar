@@ -25,6 +25,7 @@ namespace Bar.Infrastructure.Services
         }
         public override async Task<Item> Insert(Item model)
         {
+            _context.DatabaseTimeStamp.First().TimeStamp = DateTime.Now;
             _context.Item.Add(model);
             if (model.ReferringToId == 0) model.ReferringToId = null;
             if (model.ReferringToId != null)
@@ -37,6 +38,7 @@ namespace Bar.Infrastructure.Services
         }
         public override async Task<Item> Update(int id, Item model)
         {
+            _context.DatabaseTimeStamp.First().TimeStamp = DateTime.Now;
             var entity = _context.Item.Find(id);
             entity.Naziv = model.Naziv;
             entity.Price = model.Price;
@@ -59,6 +61,7 @@ namespace Bar.Infrastructure.Services
         }
         public async Task ToggleActive(int id)
         {
+            _context.DatabaseTimeStamp.First().TimeStamp = DateTime.Now;
             var item = _context.Item.Find(id);
             if (item.Active) item.Active = false;
             else item.Active = true;

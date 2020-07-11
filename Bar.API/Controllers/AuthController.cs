@@ -1,9 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Bar.Infrastructure.Interfaces;
 using Bar.Models;
+using Bar.Models.Account;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Bar.API.Controllers
 {
@@ -12,7 +19,7 @@ namespace Bar.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuth _authService;
-        private const string scheme = "BasicAuthentication";
+        private const string scheme = JwtBearerDefaults.AuthenticationScheme;
         public AuthController(IAuth authService)
         {
             _authService = authService;
@@ -43,7 +50,20 @@ namespace Bar.API.Controllers
                 if (!ModelState.IsValid) return BadRequest();
                 var result = await _authService.Authenticate(model.Username, model.Password);
                 if (result == null) return BadRequest();
-                return Ok(result);
+                //return Ok(result);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes("P696m]A=wowk3{=RwzJ+/li@2aIHL^ou_U:1]tf7ZT'aik6j2Fp=sz/@fMe1TK");
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, result.Username),
+                    new Claim("UserId", result.Id)
+                };
+                var token = new JwtSecurityToken(
+                    expires: DateTime.Now.AddMonths(1),
+                    claims: claims,
+                    signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                );
+                return Ok(new TokenModel { Token = tokenHandler.WriteToken(token) });
             }
             catch
             {

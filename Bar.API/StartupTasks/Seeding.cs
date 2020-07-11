@@ -42,6 +42,14 @@ namespace Bar.API.StartupTasks
                 //Add users to roles
                 await UserManager.AddToRoleAsync(main, "MasterUser");
             }
+            if(context.DatabaseTimeStamp.Count() == 0)
+            {
+                context.DatabaseTimeStamp.Add(new DatabaseTimeStamp
+                {
+                    TimeStamp = DateTime.Now
+                });
+                context.SaveChanges();
+            }
         }
         public static void MigrateDatabase(Context context)
         {

@@ -1,6 +1,9 @@
 ﻿using Bar.Mobile.Models;
 using Bar.Mobile.Service;
 using Bar.Models;
+using Bar.Models.DatabaseTimeStamp;
+using Bar.Models.Items;
+using Bar.Models.Locations;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
@@ -19,9 +22,11 @@ namespace Bar.Mobile.ViewModels
 {
     public class MainPageViewModel : BaseViewModel
     {
+        public ILocalService LocalService => DependencyService.Get<ILocalService>();
         private readonly APIService _itemsService = new APIService("Item");
         private readonly APIService _orderSpecificService = new APIService("OrderSpecific");
         private readonly APIService _locationService = new APIService("Location");
+        private readonly APIService _timeStampService = new APIService("DatabaseTimeStamp");
         public ObservableCollection<ItemListingModel> ItemsList { get; set; } = new ObservableCollection<ItemListingModel>();
         private ObservableCollection<Bar.Models.Location> _LocationList = new ObservableCollection<Bar.Models.Location>();
         public ObservableCollection<Bar.Models.Location> LocationList { get { return _LocationList; } set { SetProperty(ref _LocationList, value); } }
@@ -39,7 +44,8 @@ namespace Bar.Mobile.ViewModels
         }
         public async Task CreateOrder()
         {
-            try {
+            try
+            {
                 bool notAllZero = false;
                 var list = new List<ItemOrderInsertModel>();
                 foreach (var i in ItemsList)
@@ -68,7 +74,7 @@ namespace Bar.Mobile.ViewModels
                     await _orderSpecificService.Insert<OrderInsertModel>(model);
                     var serverUrl = Preferences.Get("serverUrl", "");
                     HubConnection con = new HubConnectionBuilder().WithUrl($"{serverUrl}/myHub").Build();
-                    
+
                     await con.StartAsync();
                     await con.InvokeAsync("SendMessage");
                     await con.StopAsync();
@@ -82,17 +88,31 @@ namespace Bar.Mobile.ViewModels
 
         public async Task Init()
         {
-            try {
-                var locationList = await _locationService.Get<List<Bar.Models.Location>>(null);
-                var list = await _itemsService.Get<List<Bar.Models.Item>>(null);
+            try
+            {
+                DateTime MyTimeStamp = Preferences.Get("myTimeStamp", DateTime.MinValue);
+                var serverTimeStamp = (await _timeStampService.Get<TimeStampModel>()).TimeStamp;
+
+                if (MyTimeStamp != serverTimeStamp)
+                {
+                    var locationGetModel = await _locationService.Get<ApiGetLocationModel>(null);
+                    var itemGetModel = await _itemsService.Get<ApiGetItemModel>(null);
+                    await LocalService.InsertLocationsAndItems(locationGetModel.LocationList, itemGetModel.ItemList);
+                    Preferences.Set("myTimeStamp", itemGetModel.TimeStamp);
+                }
+                var locationList = await LocalService.GetLocations();
+                var list = await LocalService.GetItems();
+
+
                 ItemsList.Clear();
                 LocationList.Clear();
-                locationList.Insert(0, new Bar.Models.Location { 
+                locationList.Insert(0, new Bar.Models.Location
+                {
                     Description = "",
                     Id = 0
                 });
                 LocationList = new ObservableCollection<Bar.Models.Location>(locationList);
-                
+
                 foreach (var item in list)
                 {
                     ItemsList.Add(new ItemListingModel
@@ -103,7 +123,7 @@ namespace Bar.Mobile.ViewModels
                     });
                 }
             }
-            catch{}
+            catch { }
         }
     }
 }

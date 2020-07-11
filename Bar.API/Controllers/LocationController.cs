@@ -6,6 +6,7 @@ using Bar.API.Controllers.Repository;
 using Bar.Database.Entities;
 using Bar.Infrastructure.Interfaces;
 using Bar.Infrastructure.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,19 +16,25 @@ namespace Bar.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = scheme)]
-    public class LocationController : BaseCrudController<Bar.Models.Location, Location, Bar.Models.Location, Bar.Models.Location>
+    public class LocationController : ControllerBase/*BaseCrudController<Bar.Models.Location, Location, Bar.Models.Location, Bar.Models.Location>*/
     {
-        private const string scheme = "BasicAuthentication";
+        private readonly IDatabaseTimeStamp _databaseTimeStampService;
+        private const string scheme = JwtBearerDefaults.AuthenticationScheme;
         private readonly ILocation _service;
-        public LocationController(ILocation service) : base(service)
+        public LocationController(ILocation service, IDatabaseTimeStamp databaseTimeStampService) /*: base(service)*/
         {
             _service = service;
+            _databaseTimeStampService = databaseTimeStampService;
         }
         [HttpGet]
-        public override async Task<List<Bar.Models.Location>> Get([FromQuery] Location obj = null)
+        public async Task<IActionResult> Get([FromQuery] Location obj = null)
         {
             var result = await _service.Get(obj);
-            return result;
+            return Ok(new Bar.Models.Locations.ApiGetLocationModel
+            { 
+                LocationList = result,
+                TimeStamp = _databaseTimeStampService.Get()
+            });
         }
     }
 }

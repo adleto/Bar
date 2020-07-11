@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Bar.API.Helpers;
-using Bar.Database.Entities;
 using Bar.Infrastructure.Interfaces;
-using Bar.Infrastructure.Services;
-using Bar.Models;
+using Bar.Models.DatabaseTimeStamp;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,21 +14,23 @@ namespace Bar.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = scheme)]
-    public class OrderSpecificController : ControllerBase
+    public class DatabaseTimeStampController : ControllerBase
     {
-        private readonly IOrderSpecific _orderSpecificService;
+        private readonly IDatabaseTimeStamp _databaseTimeStampService;
         private const string scheme = JwtBearerDefaults.AuthenticationScheme;
-        public OrderSpecificController(IOrderSpecific orderSpecificService)
+
+        public DatabaseTimeStampController(IDatabaseTimeStamp databaseTimeStampService)
         {
-            _orderSpecificService = orderSpecificService;
+            _databaseTimeStampService = databaseTimeStampService;
         }
-        [HttpPost]
-        public async Task<IActionResult> Insert(OrderInsertModel model)
+        [HttpGet]
+        public IActionResult Get()
         {
             try
             {
-                await _orderSpecificService.Insert(model, UserResolver.GetUserId(HttpContext.User));
-                return Ok();
+                return Ok(new TimeStampModel{
+                    TimeStamp = _databaseTimeStampService.Get() 
+                });
             }
             catch
             {

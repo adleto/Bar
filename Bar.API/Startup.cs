@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Bar.API.Helpers;
@@ -11,6 +12,7 @@ using Bar.Infrastructure.Interfaces;
 using Bar.Infrastructure.Repository;
 using Bar.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -21,6 +23,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace Bar.API
@@ -78,16 +81,15 @@ namespace Bar.API
             services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-                c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "basic",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Basic Authorization header using the Bearer scheme."
+                    Description = "JWT Authorization header using the Bearer scheme."
                 });
-
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
@@ -96,7 +98,7 @@ namespace Bar.API
                                 Reference = new OpenApiReference
                                 {
                                     Type = ReferenceType.SecurityScheme,
-                                    Id = "basic"
+                                    Id = "Bearer"
                                 }
                             },
                             new string[] {}
@@ -104,16 +106,27 @@ namespace Bar.API
                 });
             });
 
+            var key = Encoding.UTF8.GetBytes("P696m]A=wowk3{=RwzJ+/li@2aIHL^ou_U:1]tf7ZT'aik6j2Fp=sz/@fMe1TK");
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            }).AddScheme<AuthenticationSchemeOptions, AuthHandler>("BasicAuthentication", null);
+                //options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                //options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(jwt =>
+            {
+                jwt.RequireHttpsMetadata = false;
+                jwt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                };
+            });
+            /*.AddScheme<AuthenticationSchemeOptions, AuthHandler>("BasicAuthentication", null);*/
 
-            //services.AddScoped<IBaseCrudService<Order, Order, Order, Order>, OrderService>();
-            //services.AddScoped<IBaseCrudService<ItemOrder, ItemOrder, ItemOrder, ItemOrder>, ItemOrderService>();
-            //services.AddScoped<IBaseCrudService<Item, Item, Item, Item>, ItemService>();
             services.AddScoped<IItem, ItemService>();
 
             services.AddScoped<ILocation, LocationService>();
@@ -122,6 +135,8 @@ namespace Bar.API
             services.AddScoped<IOrderSpecific, OrderSpecificService>();
 
             services.AddScoped<IApplicationUser, ApplicationUserService>();
+
+            services.AddScoped<IDatabaseTimeStamp, DatabaseTimeStampService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

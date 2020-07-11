@@ -1,5 +1,6 @@
 ﻿using Bar.Mobile.Service;
 using Bar.Models;
+using Bar.Models.Account;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -64,7 +65,7 @@ namespace Bar.Mobile.ViewModels
         {
             try {
                 if(Preferences.ContainsKey("username") &&
-                    Preferences.ContainsKey("password") &&
+                    //Preferences.ContainsKey("password") &&
                     Preferences.ContainsKey("serverUrl"))
                 {
                     Username = Preferences.Get("username", "");
@@ -88,14 +89,16 @@ namespace Bar.Mobile.ViewModels
                 };
                 try
                 {
-                    var result = await _service.Insert<ApplicationUserModel>(upsertUser);
+                    var result = await _service.Insert<TokenModel>(upsertUser);
                     if (result != null)
                     {
                         Preferences.Set("serverUrl", ServerUrl);
                         Preferences.Set("username", Username);
-                        Preferences.Set("password", Password);
-                        APIService.Username = Username;
-                        APIService.Password = Password;
+                        //Preferences.Set("password", Password);
+                        //APIService.Username = Username;
+                        //APIService.Password = Password;
+                        Preferences.Set("token", result.Token);
+                        APIService.Token = result.Token;
                         await LoadData();
                         await Application.Current.MainPage.DisplayAlert("", "Logged in.", "OK");
                     }

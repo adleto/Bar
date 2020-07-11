@@ -11,8 +11,9 @@ namespace Bar.Mobile.Service
 {
     public class APIService
     {
-        public static string Username { get; set; }
-        public static string Password { get; set; }
+        public static string Token { get; set; }
+        //public static string Username { get; set; }
+        //public static string Password { get; set; }
         private readonly string _route = null;
         public static string ApiUrl { get; set; }
 
@@ -22,7 +23,7 @@ namespace Bar.Mobile.Service
         }
         public async Task<T> Get<T>()
         {
-            return await $"{ApiUrl}/api/{_route}".WithBasicAuth(Username, Password).GetJsonAsync<T>();
+            return await $"{ApiUrl}/api/{_route}".WithOAuthBearerToken(Token).GetJsonAsync<T>();
         }
         public async Task<T> Get<T>(object search)
         {
@@ -34,7 +35,7 @@ namespace Bar.Mobile.Service
                 //    url += "?";
                 //    url += await search.ToQueryString();
                 //}
-                return await url.WithBasicAuth(Username, Password).GetJsonAsync<T>();
+                return await url.WithOAuthBearerToken(Token).GetJsonAsync<T>();
             }
             catch (FlurlHttpException ex)
             {
@@ -49,7 +50,7 @@ namespace Bar.Mobile.Service
         {
             try
             {
-                return await $"{ApiUrl}/api/{_route}/{id}".WithBasicAuth(Username, Password).GetJsonAsync<T>();
+                return await $"{ApiUrl}/api/{_route}/{id}".WithOAuthBearerToken(Token).GetJsonAsync<T>();
 
             }
             catch
@@ -61,7 +62,7 @@ namespace Bar.Mobile.Service
         {
             try
             {
-                return await $"{ApiUrl}/api/{_route}".WithBasicAuth(Username, Password).PostJsonAsync(request).ReceiveJson<T>();
+                return await $"{ApiUrl}/api/{_route}".WithOAuthBearerToken(Token).PostJsonAsync(request).ReceiveJson<T>();
             }
             catch /*(FlurlHttpException ex)*/
             {
@@ -72,7 +73,7 @@ namespace Bar.Mobile.Service
         {
             try
             {
-                return await $"{ApiUrl}/api/{_route}/{id}".WithBasicAuth(Username, Password).PutJsonAsync(request).ReceiveJson<T>();
+                return await $"{ApiUrl}/api/{_route}/{id}".WithOAuthBearerToken(Token).PutJsonAsync(request).ReceiveJson<T>();
             }
             catch /*(FlurlHttpException ex)*/
             {
