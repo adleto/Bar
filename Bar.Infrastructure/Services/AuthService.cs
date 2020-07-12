@@ -30,7 +30,7 @@ namespace Bar.Infrastructure.Services
         public async Task<ApplicationUserModel> Authenticate(string username, string password)
         {
             var user = await _context.ApplicationUser
-                .FirstOrDefaultAsync(x => x.UserName == username);
+                .FirstOrDefaultAsync(x => x.Active == true && x.UserName == username);
             if (user != null)
             {
                 if (await _userManager.CheckPasswordAsync(user, password))
@@ -65,7 +65,8 @@ namespace Bar.Infrastructure.Services
                 }
                 var user = new ApplicationUser
                 {
-                    UserName = model.Username
+                    UserName = model.Username,
+                    Active = true
                 };
                 await _userManager.CreateAsync(user, model.Password);
                 await _userManager.AddToRoleAsync(user, model.RoleNaziv);

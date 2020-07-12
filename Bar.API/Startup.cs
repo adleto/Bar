@@ -1,28 +1,18 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
-using Bar.API.Helpers;
 using Bar.API.Hubs;
 using Bar.Database;
 using Bar.Database.Entities;
 using Bar.Infrastructure.Interfaces;
-using Bar.Infrastructure.Repository;
 using Bar.Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -106,14 +96,12 @@ namespace Bar.API
                 });
             });
 
-            var key = Encoding.UTF8.GetBytes("P696m]A=wowk3{=RwzJ+/li@2aIHL^ou_U:1]tf7ZT'aik6j2Fp=sz/@fMe1TK");
+            var key = Encoding.UTF8.GetBytes("P696m]A=wowk3{=Rwwgeg34gg42aIHL^ou_U:1]tf7ZT'aigae42ej2Fp=sz/@fMe1TK");
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-                //options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                //options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(jwt =>
             {
                 jwt.RequireHttpsMetadata = false;
@@ -162,7 +150,6 @@ namespace Bar.API
 
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapControllers();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

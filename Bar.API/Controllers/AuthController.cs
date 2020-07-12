@@ -50,9 +50,8 @@ namespace Bar.API.Controllers
                 if (!ModelState.IsValid) return BadRequest();
                 var result = await _authService.Authenticate(model.Username, model.Password);
                 if (result == null) return BadRequest();
-                //return Ok(result);
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.UTF8.GetBytes("P696m]A=wowk3{=RwzJ+/li@2aIHL^ou_U:1]tf7ZT'aik6j2Fp=sz/@fMe1TK");
+                var key = Encoding.UTF8.GetBytes("P696m]A=wowk3{=Rwwgeg34gg42aIHL^ou_U:1]tf7ZT'aigae42ej2Fp=sz/@fMe1TK");
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, result.Username),

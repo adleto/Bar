@@ -47,7 +47,8 @@ namespace Bar.Infrastructure.Services
             try
             {
                 var users = _context.ApplicationUser
-                .ToList();
+                    .Where(u => u.Active == false)
+                    .ToList();
                 var returnModel = new List<UserViewModel>();
                 users.ForEach(u => returnModel.Add(new UserViewModel
                 {
@@ -66,7 +67,7 @@ namespace Bar.Infrastructure.Services
         {
             try
             {
-                var result = await _userManager.CreateAsync(new ApplicationUser { UserName = model.Username }, model.Password);
+                var result = await _userManager.CreateAsync(new ApplicationUser { UserName = model.Username, Active = true }, model.Password);
                 var user = await _userManager.FindByNameAsync(model.Username);
                 await _userManager.AddToRoleAsync(user, model.RoleNaziv);
             }
@@ -81,7 +82,12 @@ namespace Bar.Infrastructure.Services
             try
             {
                 var user = await _userManager.FindByIdAsync(id);
-                await _userManager.DeleteAsync(user);
+                var userDbEntry = _context.ApplicationUser.Find(id);
+                userDbEntry.Active = false;
+                await _context.SaveChangesAsync();
+                await _userManager.SetLockoutEnabledAsync(user, true);
+                await _userManager.SetLockoutEndDateAsync(user, new DateTime(2999, 01, 01));
+                //await _userManager.DeleteAsync(user);
             }
             catch (Exception ex)
             {

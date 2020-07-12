@@ -20,6 +20,7 @@ namespace Bar.Mobile.Views
             menuItems = new List<HomeMenuItem>
             {
                 new HomeMenuItem {Id = MenuItemType.Narudzbe, Title="Narudžbe" },
+                new HomeMenuItem {Id = MenuItemType.MojeNarudzbe, Title="Moje narudžbe" },
                 new HomeMenuItem {Id = MenuItemType.Login, Title="Login" }
             };
 

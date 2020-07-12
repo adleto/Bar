@@ -6,6 +6,8 @@ using System.Text;
 
 namespace Bar.Database.Entities
 {
-    public class ApplicationUser:IdentityUser
-    {}
+    public class ApplicationUser : IdentityUser
+    {
+        public bool Active { get; set; }
+    }
 }

@@ -74,5 +74,12 @@ namespace Bar.Infrastructure.Services
                 .Where(i => i.ReferringToId == null && i.Active == true)
                 .ToListAsync();
         }
+
+        public async Task<List<Item>> GetDeletedItems()
+        {
+            return await _context.Item
+                .Where(i => i.Active == false)
+                .ToListAsync();
+        }
     }
 }

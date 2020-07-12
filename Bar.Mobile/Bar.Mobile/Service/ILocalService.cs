@@ -13,7 +13,7 @@ namespace Bar.Mobile.Service
         Task<List<ItemApiModel>> GetItems();
         Task WipeItemsAndLocation();
         Task<List<Bar.Models.Location>> GetLocations();
-        Task InsertOrder(List<ItemOrderInsertModel> list);
+        Task InsertOrder(int? lokacijaId, List<ItemOrderInsertModel> list);
         Task<List<MobileOrderModel>> Get(int take = 5);
         Task InsertLocationsAndItems(List<Bar.Models.Location> locations, List<ItemApiModel> items);
 

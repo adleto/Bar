@@ -31,6 +31,9 @@ namespace Bar.Mobile.Views
                     case (int)MenuItemType.Narudzbe:
                         MenuPages.Add(id, new NavigationPage(new NarudzbePage()));
                         break;
+                    case (int)MenuItemType.MojeNarudzbe:
+                        MenuPages.Add(id, new NavigationPage(new MojeNarudzbePage()));
+                        break;
                     case (int)MenuItemType.Login:
                         MenuPages.Add(id, new NavigationPage(new LoginPage()));
                         break;

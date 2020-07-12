@@ -1,0 +1,38 @@
+﻿@model List<Bar.Database.Entities.Item>
+<div class="text-center row justify-content-center">
+    <div>
+        <h1>Pregled Obrisanih Artikala</h1>
+        <br />
+
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Naziv</th>
+                            <th>Vrsta</th>
+                            <th>Cijena</th>
+                            <th>Akcije</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var k in Model)
+                        {
+                            <tr>
+                                <th>@(Model.IndexOf(k) + 1).</th>
+                                <td>@k.Naziv</td>
+                                <td>@if (k.ReferringTo != null)
+                                {<span>@k.ReferringTo.Naziv</span>}</td>
+                                <td>@k.Price.ToString("F")</td>
+                                <td>
+                                    <a href="/Item/ItemRestore?id=@k.Id">Restore</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

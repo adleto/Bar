@@ -3,7 +3,8 @@
     public enum MenuItemType
     {
         Narudzbe,
-        Login,
+        MojeNarudzbe,
+        Login
     }
     public class HomeMenuItem
     {

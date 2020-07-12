@@ -22,4 +22,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Bar.Models\Bar.Models.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Views\MojeNarudzbePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

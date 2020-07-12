@@ -70,8 +70,16 @@ namespace Bar.Mobile.ViewModels
                         List = list,
                         LocationId = null
                     };
-                    if (Location != null && Location.Id != 0) model.LocationId = Location.Id;
-                    await _orderSpecificService.Insert<OrderInsertModel>(model);
+                    int? loc = null;
+                    if (Location != null && Location.Id != 0)
+                    {
+                        model.LocationId = Location.Id;
+                        loc = Location.Id;
+                    }
+                    var taskExternalInsert = _orderSpecificService.Insert<OrderInsertModel>(model);
+                    var taskLocalInsert = LocalService.InsertOrder(loc, model.List);
+                    await taskExternalInsert;
+                    await taskLocalInsert;
                     var serverUrl = Preferences.Get("serverUrl", "");
                     HubConnection con = new HubConnectionBuilder().WithUrl($"{serverUrl}/myHub").Build();
 

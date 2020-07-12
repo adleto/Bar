@@ -113,5 +113,30 @@ namespace Bar.API.Controllers.WebControllers
                 return BadRequest();
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> ItemRestore([FromQuery]int id)
+        {
+            try
+            {
+                await _itemService.ToggleActive(id);
+                return RedirectToAction(nameof(DeletedItems));
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> DeletedItems()
+        {
+            try
+            {
+                return View(await _itemService.GetDeletedItems());
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
     }
 }

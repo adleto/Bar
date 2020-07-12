@@ -13,5 +13,6 @@ namespace Bar.Infrastructure.Interfaces
         new Task<List<Item>> Get(Item obj = null);
         Task ToggleActive(int id);
         Task<List<Item>> GetVrste();
+        Task<List<Item>> GetDeletedItems();
     }
 }
