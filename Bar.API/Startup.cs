@@ -36,7 +36,6 @@ namespace Bar.API
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<Context>();
-            //services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddControllersWithViews();
             services.AddSignalR();
 
@@ -51,8 +50,8 @@ namespace Bar.API
                 options.Password.RequiredUniqueChars = 0;
 
                 // Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(60);
+                options.Lockout.MaxFailedAccessAttempts = 4;
                 options.Lockout.AllowedForNewUsers = true;
 
                 // User settings.
@@ -113,17 +112,12 @@ namespace Bar.API
                     ValidateAudience = false,
                 };
             });
-            /*.AddScheme<AuthenticationSchemeOptions, AuthHandler>("BasicAuthentication", null);*/
 
             services.AddScoped<IItem, ItemService>();
-
             services.AddScoped<ILocation, LocationService>();
-
             services.AddScoped<IAuth, AuthService>();
             services.AddScoped<IOrderSpecific, OrderSpecificService>();
-
             services.AddScoped<IApplicationUser, ApplicationUserService>();
-
             services.AddScoped<IDatabaseTimeStamp, DatabaseTimeStampService>();
         }
 

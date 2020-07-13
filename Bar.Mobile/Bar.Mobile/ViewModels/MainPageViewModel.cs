@@ -8,13 +8,8 @@ using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -22,6 +17,7 @@ namespace Bar.Mobile.ViewModels
 {
     public class MainPageViewModel : BaseViewModel
     {
+        private readonly string serverUrl;
         public ILocalService LocalService => DependencyService.Get<ILocalService>();
         private readonly APIService _itemsService = new APIService("Item");
         private readonly APIService _orderSpecificService = new APIService("OrderSpecific");
@@ -31,6 +27,12 @@ namespace Bar.Mobile.ViewModels
         private ObservableCollection<Bar.Models.Location> _LocationList = new ObservableCollection<Bar.Models.Location>();
         public ObservableCollection<Bar.Models.Location> LocationList { get { return _LocationList; } set { SetProperty(ref _LocationList, value); } }
         private Bar.Models.Location location;
+
+        public MainPageViewModel()
+        {
+            serverUrl = Preferences.Get("serverUrl", "");
+        }
+
         public Bar.Models.Location Location { get { return location; } set { SetProperty(ref location, value); } }
         public void DoRaise(int? id)
         {
@@ -80,7 +82,7 @@ namespace Bar.Mobile.ViewModels
                     var taskLocalInsert = LocalService.InsertOrder(loc, model.List);
                     await taskExternalInsert;
                     await taskLocalInsert;
-                    var serverUrl = Preferences.Get("serverUrl", "");
+                    //var serverUrl = Preferences.Get("serverUrl", "");
                     HubConnection con = new HubConnectionBuilder().WithUrl($"{serverUrl}/myHub").Build();
 
                     await con.StartAsync();

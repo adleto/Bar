@@ -14,8 +14,6 @@ namespace Bar.Mobile
             
             if (Preferences.ContainsKey("username"))
             {
-                //APIService.Username = Preferences.Get("username","");
-                //APIService.Password = Preferences.Get("password", "");
                 APIService.Token = Preferences.Get("token", "");
                 APIService.ApiUrl = Preferences.Get("serverUrl", "");
             }

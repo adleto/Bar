@@ -18,7 +18,14 @@ namespace Bar.API.Controllers.WebControllers
         }
         public async Task<IActionResult> MijenjanoStanje()
         {
-            return View(await _orderSpecificService.GetMijenjanoStanje(30));
+            try 
+            { 
+                return View(await _orderSpecificService.GetMijenjanoStanje(30));
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
     }
 }

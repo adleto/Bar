@@ -1,6 +1,5 @@
 ﻿using Bar.Database;
 using Bar.Database.Entities;
-using Bar.Infrastructure.Helpers;
 using Bar.Infrastructure.Interfaces;
 using Bar.Models;
 using Microsoft.AspNetCore.Identity;
@@ -8,9 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Bar.Infrastructure.Services

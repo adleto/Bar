@@ -65,7 +65,6 @@ namespace Bar.Mobile.ViewModels
         {
             try {
                 if(Preferences.ContainsKey("username") &&
-                    //Preferences.ContainsKey("password") &&
                     Preferences.ContainsKey("serverUrl"))
                 {
                     Username = Preferences.Get("username", "");
@@ -94,12 +93,9 @@ namespace Bar.Mobile.ViewModels
                     {
                         Preferences.Set("serverUrl", ServerUrl);
                         Preferences.Set("username", Username);
-                        //Preferences.Set("password", Password);
-                        //APIService.Username = Username;
-                        //APIService.Password = Password;
                         Preferences.Set("token", result.Token);
                         APIService.Token = result.Token;
-                        await LoadData();
+                        //await LoadData();
                         await Application.Current.MainPage.DisplayAlert("", "Logged in.", "OK");
                     }
                 }

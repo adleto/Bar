@@ -16,12 +16,12 @@ namespace Bar.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = scheme)]
-    public class LocationController : ControllerBase/*BaseCrudController<Bar.Models.Location, Location, Bar.Models.Location, Bar.Models.Location>*/
+    public class LocationController : ControllerBase
     {
         private readonly IDatabaseTimeStamp _databaseTimeStampService;
         private const string scheme = JwtBearerDefaults.AuthenticationScheme;
         private readonly ILocation _service;
-        public LocationController(ILocation service, IDatabaseTimeStamp databaseTimeStampService) /*: base(service)*/
+        public LocationController(ILocation service, IDatabaseTimeStamp databaseTimeStampService)
         {
             _service = service;
             _databaseTimeStampService = databaseTimeStampService;

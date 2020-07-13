@@ -138,14 +138,6 @@ namespace Bar.Infrastructure.Services
             if (order.Active) order.Active = false;
             else order.Active = true;
             order.LastChangeMadeById = userId;
-            //var itemOrderStavke = await _context.ItemOrder
-            //    .Where(x => x.OrderId == id)
-            //    .ToListAsync();
-            //foreach(var i in itemOrderStavke)
-            //{
-            //    _context.ItemOrder.Remove(i);
-            //}
-            //_context.Order.Remove(order);
             await _context.SaveChangesAsync();
         }
 

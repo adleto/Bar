@@ -18,7 +18,7 @@ namespace Bar.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = scheme)]
-    public class ItemController : ControllerBase/*: BaseCrudController<Item, Item, Item, Item>*/
+    public class ItemController : ControllerBase
     {
         private readonly IDatabaseTimeStamp _databaseTimeStampService;
         private readonly IItem _service;

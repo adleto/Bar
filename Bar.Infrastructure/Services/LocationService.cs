@@ -35,8 +35,7 @@ namespace Bar.Infrastructure.Services
         {
             _context.DatabaseTimeStamp.First().TimeStamp = DateTime.Now;
             var item = _context.Location.Find(id);
-            if (item.Active) item.Active = false;
-            else item.Active = true;
+            item.Active = !item.Active;
             await _context.SaveChangesAsync();
         }
     }

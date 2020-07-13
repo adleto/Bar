@@ -1,6 +1,5 @@
 ﻿using Flurl;
 using Flurl.Http;
-//using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,8 +11,6 @@ namespace Bar.Mobile.Service
     public class APIService
     {
         public static string Token { get; set; }
-        //public static string Username { get; set; }
-        //public static string Password { get; set; }
         private readonly string _route = null;
         public static string ApiUrl { get; set; }
 

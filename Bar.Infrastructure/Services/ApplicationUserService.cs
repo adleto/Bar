@@ -47,7 +47,7 @@ namespace Bar.Infrastructure.Services
             try
             {
                 var users = _context.ApplicationUser
-                    .Where(u => u.Active == false)
+                    .Where(u => u.Active == true)
                     .ToList();
                 var returnModel = new List<UserViewModel>();
                 users.ForEach(u => returnModel.Add(new UserViewModel
@@ -87,7 +87,6 @@ namespace Bar.Infrastructure.Services
                 await _context.SaveChangesAsync();
                 await _userManager.SetLockoutEnabledAsync(user, true);
                 await _userManager.SetLockoutEndDateAsync(user, new DateTime(2999, 01, 01));
-                //await _userManager.DeleteAsync(user);
             }
             catch (Exception ex)
             {

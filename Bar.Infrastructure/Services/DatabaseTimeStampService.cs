@@ -18,7 +18,7 @@ namespace Bar.Infrastructure.Services
 
         public DateTime Get()
         {
-            return _context.DatabaseTimeStamp.First().TimeStamp;
+            return _context.DatabaseTimeStamp.Select(t => t.TimeStamp).First();
         }
     }
 }

@@ -18,13 +18,11 @@ namespace Bar.API.Controllers.WebControllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        //private readonly IApplicationUser _applicationUserService;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager/*, IApplicationUser applicationUserService*/)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            //_applicationUserService = applicationUserService;
         }
         [AnonymousOnly]
         public async Task<IActionResult> Login()
@@ -37,11 +35,7 @@ namespace Bar.API.Controllers.WebControllers
             {
                 ModelState.AddModelError(string.Empty, model.ErrorMessage);
             }
-
-            // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
-            //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             return View(model);
         }
         [AnonymousOnly]
