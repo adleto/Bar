@@ -1,6 +1,8 @@
 ﻿@model Bar.API.ViewModels.IndexViewModel
 @{ 
-    var latest = Model.OrderList.Max(o => o.Id);
+    int latest = 0;
+    if(Model.OrderList.Count>0)
+        latest = Model.OrderList.Max(o => o.Id);
 }
 <div class="text-center myFace table-responsive row">
     <table class="table table-bordered">
@@ -49,8 +51,10 @@
 </div>
 <script>
     var row = $("#@latest");
-    row.css("background", "lightgreen");
-    setTimeout(function () {
-        row.css("background", "white");
-    }, 7000);
+    if (row != null) {
+        row.css("background", "lightgreen");
+        setTimeout(function () {
+            row.css("background", "white");
+        }, 7000);
+    }
 </script>

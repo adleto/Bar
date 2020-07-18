@@ -4,7 +4,7 @@ using Bar.Models;
 using Bar.Models.DatabaseTimeStamp;
 using Bar.Models.Items;
 using Bar.Models.Locations;
-using Microsoft.AspNetCore.SignalR.Client;
+//using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,7 +17,7 @@ namespace Bar.Mobile.ViewModels
 {
     public class MainPageViewModel : BaseViewModel
     {
-        private readonly string serverUrl;
+        //private readonly string serverUrl;
         public ILocalService LocalService => DependencyService.Get<ILocalService>();
         private readonly APIService _itemsService = new APIService("Item");
         private readonly APIService _orderSpecificService = new APIService("OrderSpecific");
@@ -30,7 +30,7 @@ namespace Bar.Mobile.ViewModels
 
         public MainPageViewModel()
         {
-            serverUrl = Preferences.Get("serverUrl", "");
+            //serverUrl = Preferences.Get("serverUrl", "");
         }
 
         public Bar.Models.Location Location { get { return location; } set { SetProperty(ref location, value); } }
@@ -82,12 +82,12 @@ namespace Bar.Mobile.ViewModels
                     var taskLocalInsert = LocalService.InsertOrder(loc, model.List);
                     await taskExternalInsert;
                     await taskLocalInsert;
-                    //var serverUrl = Preferences.Get("serverUrl", "");
-                    HubConnection con = new HubConnectionBuilder().WithUrl($"{serverUrl}/myHub").Build();
 
-                    await con.StartAsync();
-                    await con.InvokeAsync("SendMessage");
-                    await con.StopAsync();
+                    //var serverUrl = Preferences.Get("serverUrl", "");
+                    //HubConnection con = new HubConnectionBuilder().WithUrl($"{serverUrl}/myHub").Build();
+                    //await con.StartAsync();
+                    //await con.InvokeAsync("SendMessage");
+                    //await con.StopAsync();
                 }
             }
             catch

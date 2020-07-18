@@ -34,7 +34,8 @@ namespace Bar.API.StartupTasks
                 ApplicationUser main = new ApplicationUser
                 {
                     UserName = "masterUser",
-                    Email = "master@zar.com"
+                    Email = "master@zar.com",
+                    Active = true
                 };
                 await UserManager.CreateAsync(main, "bestVersionDude5");
                 //Add users to roles
