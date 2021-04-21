@@ -2,7 +2,6 @@
 
 Calculate income over time for your Cafe/Bar<br />
 Waiters use mobile app to add new orders<br />
-<br />
 
 ### Functionalities
 
