@@ -50,18 +50,18 @@ namespace Bar.API.Controllers
         {
             try
             {
-                DateTime odD;
-                DateTime doD;
-                try
-                {
-                    odD = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, ("Central European Standard Time"));
-                    doD = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, ("Central European Standard Time"));
-                }
-                catch (TimeZoneNotFoundException)
-                {
-                    odD = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Europe/Belgrade");
-                    doD = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Europe/Belgrade");
-                }
+                DateTime odD = DateTime.Now;
+                DateTime doD = DateTime.Now;
+                //try
+                //{
+                //    odD = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, ("Central European Standard Time"));
+                //    doD = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, ("Central European Standard Time"));
+                //}
+                //catch (TimeZoneNotFoundException)
+                //{
+                //    odD = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Europe/Belgrade");
+                //    doD = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Europe/Belgrade");
+                //}
                 if (odDate == null || doDate == null) return View(new GetDataReportViewModel { 
                     ItemCountsList = new List<ItemCounts>(),
                     OrderList = new List<OrderModel>(),

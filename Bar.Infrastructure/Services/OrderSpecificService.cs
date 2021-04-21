@@ -96,15 +96,15 @@ namespace Bar.Infrastructure.Services
 
         public async Task Insert(OrderInsertModel model, string userId)
         {
-            DateTime now;
-            try
-            {
-                now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, ("Central European Standard Time"));
-            }
-            catch (TimeZoneNotFoundException)
-            {
-                now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Europe/Belgrade");
-            }
+            DateTime now = DateTime.Now;
+            //try
+            //{
+            //    now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, ("Central European Standard Time"));
+            //}
+            //catch (TimeZoneNotFoundException)
+            //{
+            //    now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Europe/Belgrade");
+            //}
             var order = new Order
             {
                 TimeOfOrder = now,

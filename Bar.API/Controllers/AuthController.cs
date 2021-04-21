@@ -51,7 +51,7 @@ namespace Bar.API.Controllers
                 var result = await _authService.Authenticate(model.Username, model.Password);
                 if (result == null) return BadRequest();
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.UTF8.GetBytes("P696m]A=wowk3{=Rw3gr4h5gg34gg42aIHL^ou_U:1]tf7ZT'aigae42ej2Fp=sz/@fMe1TK");
+                var key = Encoding.UTF8.GetBytes("P696m]A=wowk3{=Rw3gr4h5gevh9i42femkaIHL^ou_U:1]tf7ZT'aigae42ej2Fp=sz/@fMe1TK");
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, result.Username),

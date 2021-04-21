@@ -95,7 +95,7 @@ namespace Bar.API
                 });
             });
 
-            var key = Encoding.UTF8.GetBytes("P696m]A=wowk3{=Rw3gr4h5gg34gg42aIHL^ou_U:1]tf7ZT'aigae42ej2Fp=sz/@fMe1TK");
+            var key = Encoding.UTF8.GetBytes("P696m]A=wowk3{=Rw3gr4h5gevh9i42femkaIHL^ou_U:1]tf7ZT'aigae42ej2Fp=sz/@fMe1TK");
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
